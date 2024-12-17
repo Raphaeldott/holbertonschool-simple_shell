@@ -12,10 +12,12 @@ extern char **environ;
 
 void print_prompt(void);
 ssize_t read_input(char **line, size_t *len);
-void execute_command(char *line, char **environ);
 void handle_exit(char *input_line);
 void handle_env(char *input_line);
 void shell_loop(void);
 char *find_executable(char *command);
+void execute_command(char **argv, char **environment_var);
+char **tokenize_input(char *line);
+void prompt(void);
 
 #endif /* SHELL_H */

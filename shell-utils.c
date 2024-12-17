@@ -60,15 +60,15 @@ char *find_executable(char *command)
  * The parent process waits for the child to finish.
  * If execve fails, an error message is printed.
  */
-void execute_command(char *command, char **environment_var)
+void execute_command(char **argv, char **environment_var)
 {
-	char *argv[2];
 	pid_t pid;
-	char *executable = find_executable(command);
+	/* previously argv[0] was command */
+	char *executable = find_executable(argv[0]);
 
 	if (executable == NULL)
 	{
-		fprintf(stderr, "%s: command not found\n", command);
+		fprintf(stderr, "%s: command not found\n", argv[0]);
 		return;
 	}
 
@@ -80,7 +80,7 @@ void execute_command(char *command, char **environment_var)
 	if (pid == -1)
 	{
 		perror("fork");
-		free(command);
+		free(argv[0]);
 		free(executable);
 		exit(EXIT_FAILURE);
 	}
@@ -88,7 +88,8 @@ void execute_command(char *command, char **environment_var)
 	{
 		if (execve(argv[0], argv, environment_var) == -1)
 		{
-			perror("./shell");
+			/* "./shell" */
+			perror(argv[0]);
 			free(executable);
 			exit(EXIT_FAILURE);
 		}

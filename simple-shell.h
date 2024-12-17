@@ -14,5 +14,6 @@ void print_prompt(void);
 ssize_t read_input(char **line, size_t *len);
 void execute_command(char *line, char **environ);
 void prompt(void);
+void handle_exit(char *input_line);
 
 #endif /* SHELL_H */

@@ -17,7 +17,7 @@ void print_prompt(void)
 /**
  * read_input - Reads a line of input from the user.
  * @line: Pointer to the buffer where the input will be stored.
- * @len: Pointer to the size of the buffer.
+ * @length: Pointer to the size of the buffer.
  *
  * Return: The number of characters read, or -1 on failure.
  *
@@ -46,8 +46,8 @@ ssize_t read_input(char **line, size_t *length)
 
 /**
  * execute_command - Executes the command entered by the user.
- * @line: The command to execute.
- * @environ: The environment variables.
+ * @command: The command to execute.
+ * @environment_var: The environment variables.
  *
  * This function forks a child process to execute the
  * command entered by the user.

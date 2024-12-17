@@ -13,7 +13,8 @@ extern char **environ;
 void print_prompt(void);
 ssize_t read_input(char **line, size_t *len);
 void execute_command(char *line, char **environ);
-void prompt(void);
 void handle_exit(char *input_line);
+void handle_env(char *input_line);
+void shell_loop(void);
 
 #endif /* SHELL_H */

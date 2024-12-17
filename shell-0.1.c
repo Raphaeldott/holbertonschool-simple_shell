@@ -25,6 +25,7 @@ void shell_loop(void)
 
 		input_line[strcspn(input_line, "\n")] = '\0';
 		handle_exit(input_line);
+		handle_env(input_line);
 		execute_command(input_line, environ);
 	}
 

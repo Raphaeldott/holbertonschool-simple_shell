@@ -16,5 +16,6 @@ void execute_command(char *line, char **environ);
 void handle_exit(char *input_line);
 void handle_env(char *input_line);
 void shell_loop(void);
+char *find_executable(char *command);
 
 #endif /* SHELL_H */

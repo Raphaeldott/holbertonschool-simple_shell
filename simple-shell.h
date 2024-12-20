@@ -12,7 +12,8 @@ extern char **environ;
 
 void print_prompt(void);
 ssize_t read_input(char **line, size_t *len);
-void execute_command(char *line, char **environ);
+void execute_command(char **argv, char **environ);
+char **tokenize_input(char *line);
 void prompt(void);
 
 #endif /* SHELL_H */

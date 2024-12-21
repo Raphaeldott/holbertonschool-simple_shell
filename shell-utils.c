@@ -81,6 +81,7 @@ void execute_command(char *command, char **environment_var)
 	{
 		perror("fork");
 		free(command);
+		free(executable);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
@@ -88,6 +89,7 @@ void execute_command(char *command, char **environment_var)
 		if (execve(argv[0], argv, environment_var) == -1)
 		{
 			perror("./shell");
+			free(executable);
 			exit(EXIT_FAILURE);
 		}
 	}

@@ -1,0 +1,96 @@
+SIMPLE_SHELL(1)                   User Commands                    SIMPLE_SHELL(1)
+
+NAME
+       simple_shell - custom implementation of a basic UNIX shell.
+
+SYNOPSIS
+       #include "simple-shell.h"
+
+       void prompt(void);
+       char **tokenize_input(char *line);
+       void execute_command(char **argv, char **environment_var);
+
+DESCRIPTION
+       simple_shell is a custom implementation of a basic UNIX shell that executes
+       user commands and supports built-in commands like "exit" and "env". It interacts
+       with the system by forking processes and using execve to run commands.
+
+       The shell executes user commands by reading input from stdin, parsing it,
+       and searching for executables in directories listed in the PATH environment variable.
+       If a command is found, it is executed in a new process. Built-in commands are
+       handled within the shell itself.
+
+BUILT-IN COMMANDS
+       The following built-in commands are supported:
+
+       exit    Exits the shell.
+
+       env     Prints the current environment variables.
+
+       Other commands are passed to the system for execution if they are found
+       in the PATH.
+
+TOKENIZATION
+       The input line is tokenized into individual strings (commands and arguments)
+       using space as the delimiter. This is achieved using the `strtok` function.
+       The command is then executed based on the tokenized arguments.
+
+PROCESS MANAGEMENT
+       The shell uses `fork()` to create a child process to execute commands. If
+       the command is found in the system, the child process uses `execve` to run it.
+       The parent process waits for the child process to finish execution.
+
+RETURN VALUE
+       On success, the shell returns 0. If an error occurs (e.g., command not found),
+       an error message is printed.
+
+IMPLEMENTATION DETAILS
+       - The shell uses `malloc` and `realloc` to dynamically manage memory
+         for storing input and tokenized arguments.
+       - Built-in commands like `exit` and `env` are handled directly by the shell.
+       - The shell searches for executables in directories listed in the `PATH`
+         environment variable.
+
+LIMITATIONS
+       - The shell only handles basic commands and built-ins. It does not support
+         advanced shell features such as piping, redirection, or job control.
+       - No argument parsing or validation for built-in commands.
+       - Limited error handling for malformed commands or arguments.
+
+USAGE EXAMPLES
+       Example 1: Run a simple command
+           My_Shell$ ls
+           file1  file2  directory
+
+       Example 2: Run a command with arguments
+           My_Shell$ ls -l
+           -rw-r--r-- 1 user user 1234 Jan 1 12:00 file1
+
+       Example 3: Print environment variables
+           My_Shell$ env
+           USER=username
+           HOME=/home/username
+           PATH=/usr/local/bin:/usr/bin:/bin
+
+       Example 4: Exit the shell
+           My_Shell$ exit
+
+FILES
+       - simple-shell.h: Header file containing function prototypes.
+       - shell-0.1.c: Main shell loop and command processing.
+       - shell-helpers.c: Built-in command handling and input reading.
+       - shell-utils.c: Utilities for finding executables and executing commands.
+
+AUTHOR
+       Written by [Your Name] and contributors.
+
+REPORTING BUGS
+       Report bugs or improvements to the authors at:
+       [your-email@example.com]
+
+SEE ALSO
+       man 1 sh
+       man 1 bash
+       Full documentation for your custom shell is available locally via: info 'simple_shell'
+       
+November 2025                         SIMPLE_SHELL(1)

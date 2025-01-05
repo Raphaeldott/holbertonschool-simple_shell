@@ -7,7 +7,7 @@
 #include "simple-shell.h"
 
 /**
- * tokenize_input - Splits the input line into command and arguments.
+ * tokenize_input - Split the input line into command and arguments.
  * @line: The input line to tokenize.
  *
  * Return: An array of strings (tokens), NULL-terminated.

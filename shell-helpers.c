@@ -12,7 +12,7 @@ void print_prompt(void)
 }
 
 /**
- * read_input - Reads a line of input from the user.
+ * read_input - Read a line of input from the user.
  * @line: Pointer to the buffer where the input will be stored.
  * @length: Pointer to the size of the buffer.
  *

@@ -54,7 +54,7 @@ char *find_executable(char *command)
  * @command: The command to execute.
  * @environment_var: The environment variables.
  *
- * This function forks a child process to execute the
+ * This function fork a child process to execute the
  * command entered by the user.
  * The child process uses execve to run the command.
  * The parent process waits for the child to finish.

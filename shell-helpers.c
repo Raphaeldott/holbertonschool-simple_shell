@@ -1,15 +1,4 @@
 #include "simple-shell.h"
-/**
- * print_prompt - Displays the prompt to the user.
- *
- * This function prints the shell prompt to the terminal, indicating that the
- * shell is ready to accept a new command from the user.
- */
-void print_prompt(void)
-{
-	printf("#cisfun$ ");
-	fflush(stdout);
-}
 
 /**
  * read_input - Read a line of input from the user.

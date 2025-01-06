@@ -1,88 +1,48 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "simple-shell.h"
 
 /**
- * print_prompt - Displays the prompt to the user.
+ * tokenize_input - Split the input line into command and arguments.
+ * @line: The input line to tokenize.
  *
- * This function prints the shell prompt to the terminal, indicating that the
- * shell is ready to accept a new command from the user.
+ * Return: An array of strings (tokens), NULL-terminated.
  */
-void print_prompt(void)
+char **tokenize_input(char *line)
 {
-	printf("My_Shell$ ");
-}
+	size_t bufsize = 64, i = 0;
+	char **tokens = malloc(bufsize * sizeof(char *));
+	char *token;
 
-/**
- * read_input - Reads a line of input from the user.
- * @line: Pointer to the buffer where the input will be stored.
- * @len: Pointer to the size of the buffer.
- *
- * Return: The number of characters read, or -1 on failure.
- *
- * This function reads a line of input from the user using the
- * getline function.
- * It handles errors and end-of-file conditions appropriately.
- */
-ssize_t read_input(char **line, size_t *length)
-{
-	ssize_t read = getline(line, length, stdin);
-
-	if (read == -1)
-
+	if (!tokens)
 	{
-		if (feof(stdin))
-		{
-			printf("\n");
-		}
-		else
-		{
-			perror("getline");
-		}
-	}
-	return (read);
-}
-
-/**
- * execute_command - Executes the command entered by the user.
- * @line: The command to execute.
- * @environ: The environment variables.
- *
- * This function forks a child process to execute the
- * command entered by the user.
- * The child process uses execve to run the command.
- * The parent process waits for the child to finish.
- * If execve fails, an error message is printed.
- */
-void execute_command(char *command, char **environment_var)
-{
-	char *argv[2];
-	pid_t pid;
-
-	argv[0] = command;
-	argv[1] = NULL;
-
-	pid = fork();
-
-	if (pid == -1)
-	{
-		perror("fork");
-		free(command);
+		perror("malloc");
 		exit(EXIT_FAILURE);
 	}
-	else if (pid == 0)
+
+	token = strtok(line, " ");
+	while (token)
 	{
-		if (execve(argv[0], argv, environment_var) == -1)
+		tokens[i++] = token;
+		if (i >= bufsize)
 		{
-			perror("./shell");
-			exit(EXIT_FAILURE);
+			bufsize += 64;
+			tokens = realloc(tokens, bufsize * sizeof(char *));
+			if (!tokens)
+			{
+				perror("realloc");
+				exit(EXIT_FAILURE);
+			}
 		}
+		token = strtok(NULL, " ");
 	}
-	else
-	{
-		wait(NULL);
-	}
+	tokens[i] = NULL;
+
+	return (tokens);
 }
 
 /**
@@ -102,6 +62,7 @@ void prompt(void)
 	char *input_line = NULL;
 	size_t input_length = 0;
 	ssize_t characters_read;
+	char **argv;
 
 	while (1)
 	{
@@ -114,7 +75,11 @@ void prompt(void)
 		}
 
 		input_line[strcspn(input_line, "\n")] = '\0';
-		execute_command(input_line, environ);
+		handle_exit(input_line);
+		handle_env(input_line);
+		argv = tokenize_input(input_line);
+		execute_command(argv, environ);
+		free(argv);
 	}
 
 	free(input_line);
@@ -122,7 +87,7 @@ void prompt(void)
 
 /**
  * main - Entry point of the shell program.
- * This function calls the prompt function to start the
+ * This function calls the shell_loop function to start the
  * shell and then returns 0 to indicate successful execution.
  *
  * Return: Always 0.

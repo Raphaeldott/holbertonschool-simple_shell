@@ -32,14 +32,22 @@ ssize_t read_input(char **line, size_t *length)
 		{
 			printf("\n");
 			free(*line);
-			exit(-1); /* Return -1 instead of exiting */
+			exit(0);
 		}
 		else
 		{
+			perror("getline");
 			free(*line);
 			exit(EXIT_FAILURE);
 		}
 	}
+	if (*line && (*line)[0] == 27)
+	{
+		memset(*line, 0, strlen(*line));
+		return (0);
+	}
+	if ((*line)[read - 1] == '\n')
+		(*line)[read - 1] = '\0';
 	return (read);
 }
 

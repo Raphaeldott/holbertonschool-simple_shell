@@ -19,5 +19,9 @@ char *find_executable(char *command);
 void execute_command(char **argv, char **environment_var);
 char **tokenize_input(char *line);
 void prompt(void);
+int is_absolute_command(char *command);
+char *check_absolute_command(char *command);
+char *search_in_path(char *command, char *path);
+
 
 #endif /* SHELL_H */

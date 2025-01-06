@@ -1,35 +1,51 @@
 #include "simple-shell.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 /**
- * find_executable - Searches for an executable in the
- * directories listed in PATH.
- * @command: The command to search for.
+ * is_absolute_command - Checks if a command is an absolute or relative path.
+ * @command: The command to check.
  *
- * Return: The full path to the executable if found, otherwise NULL.
+ * Return: 1 if true, 0 otherwise.
  */
-char *find_executable(char *command)
+int is_absolute_command(char *command)
 {
-	char *path, *path_copy, *dir, *full_path;
+	return (command[0] == '/' || command[0] == '.');
+}
 
-	if (command[0] == '/' || command[0] == '.')
+/**
+ * check_absolute_command - Checks if an absolute/relative path is executable.
+ * @command: The command to check.
+ *
+ * Return: The duplicated command if executable, NULL otherwise.
+ */
+char *check_absolute_command(char *command)
+{
+	if (access(command, X_OK) == 0)
+		return (strdup(command));
+
+	fprintf(stderr, "%s: Command not found\n", command);
+	return (NULL);
+}
+
+/**
+ * search_in_path - Searches for a command in PATH directories.
+ * @command: The command to search for.
+ * @path: The PATH environment variable.
+ *
+ * Return: The full path to the executable if found, NULL otherwise.
+ */
+char *search_in_path(char *command, char *path)
+{
+	char *path_copy = strdup(path), *dir, *full_path = malloc(1024);
+
+	if (!path_copy || !full_path)
 	{
-		if (access(command, X_OK) == 0)
-			return (strdup(command));
-		return (NULL);
-	}
-
-	path = getenv("PATH");
-	if (!path)
-		return (NULL);
-
-	path_copy = strdup(path);
-	if (!path_copy)
-		return (NULL);
-
-	full_path = malloc(1024);
-	if (!full_path)
-	{
+		perror("Memory allocation failed");
 		free(path_copy);
+		free(full_path);
 		return (NULL);
 	}
 
@@ -47,8 +63,39 @@ char *find_executable(char *command)
 
 	free(path_copy);
 	free(full_path);
+	fprintf(stderr, "%s: Command not found in PATH\n", command);
 	return (NULL);
 }
+
+/**
+ * find_executable - Finds the full path of an executable command.
+ * @command: The command to find.
+ *
+ * Return: The full path to the executable if found, NULL otherwise.
+ */
+char *find_executable(char *command)
+{
+	char *path;
+
+	if (!command || !*command)
+	{
+		fprintf(stderr, "Invalid command\n");
+		return (NULL);
+	}
+
+	if (is_absolute_command(command))
+		return (check_absolute_command(command));
+
+	path = getenv("PATH");
+	if (!path)
+	{
+		fprintf(stderr, "PATH not set\n");
+		return (NULL);
+	}
+
+	return (search_in_path(command, path));
+}
+
 /**
  * execute_command - Executes a command entered by the user.
  * @argv: Array of command arguments.

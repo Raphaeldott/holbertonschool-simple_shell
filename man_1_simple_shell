@@ -93,5 +93,5 @@ SEE ALSO
        man 1 sh
        man 1 bash
        Full documentation for your custom shell is available locally via: info 'simple_shell'
-       
+
 November 2025                         SIMPLE_SHELL(1)

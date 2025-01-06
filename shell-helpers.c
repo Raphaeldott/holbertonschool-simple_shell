@@ -8,7 +8,8 @@
  */
 void print_prompt(void)
 {
-	printf("My_Shell$ ");
+	printf("#cisfun$ ");
+	fflush(stdout);
 }
 
 /**

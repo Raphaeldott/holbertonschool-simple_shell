@@ -50,30 +50,37 @@ char *find_executable(char *command)
 	return (NULL);
 }
 /**
- * execute_command - Executes the command entered by the user.
+ * execute_command - Executes a command entered by the user.
+ * @argv: Array of command arguments.
  * @environment_var: The environment variables.
- * @argv: the prompt
  *
- * This function fork a child process to execute the
- * command entered by the user.
- * The child process uses execve to run the command.
- * The parent process waits for the child to finish.
- * If execve fails, an error message is printed.
+ * This function forks a child process to execute the
+ * command entered by the user. The child process uses
+ * execve to run the command. The parent process waits
+ * for the child to finish. If execve fails, an error
+ * message is printed.
  */
 void execute_command(char **argv, char **environment_var)
 {
 	pid_t pid;
+	char *executable = find_executable(argv[0]);
 
-	if (access(argv[0], X_OK) != 0)
+	if (executable == NULL)
 	{
-		fprintf(stderr, "%s: No such file or directory\n", argv[0]);
+		fprintf(stderr, "%s: command not found\n", argv[0]);
 		return;
 	}
 
+	argv[0] = executable;
+	argv[1] = NULL;
+
 	pid = fork();
+
 	if (pid == -1)
 	{
 		perror("fork");
+		free(argv[0]);
+		free(executable);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
@@ -81,11 +88,14 @@ void execute_command(char **argv, char **environment_var)
 		if (execve(argv[0], argv, environment_var) == -1)
 		{
 			perror(argv[0]);
+			free(executable);
 			exit(EXIT_FAILURE);
 		}
 	}
 	else
 	{
-		wait(NULL);
+		wait(NULL); /* Wait for child process to complete */
 	}
+
+	free(executable);
 }

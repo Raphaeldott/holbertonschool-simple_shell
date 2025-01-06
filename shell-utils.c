@@ -67,7 +67,7 @@ void execute_command(char **argv, char **environment_var)
 
 	if (executable == NULL)
 	{
-		fprintf(stderr, "%s: command not found\n", argv[0]);
+		fprintf(stderr, "%s: No such file or directory\n", argv[0]);
 		return;
 	}
 

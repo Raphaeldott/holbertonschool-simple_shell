@@ -9,46 +9,46 @@
  */
 char *find_executable(char *command)
 {
-	char *path = getenv("PATH");
-	char *path_copy;
-	char *dir;
-	char *full_path;
+	char *path, *path_copy, *dir, *full_path;
 
-	if (path == NULL)
+	if (command[0] == '/' || command[0] == '.')
 	{
-		return (NULL);
+		if (access(command, X_OK) == 0)
+			return strdup(command);
+		return NULL;
 	}
+
+	path = getenv("PATH");
+	if (!path)
+		return NULL;
 
 	path_copy = strdup(path);
-	if (path_copy == NULL)
-	{
-		return (NULL);
-	}
+	if (!path_copy)
+		return NULL;
 
 	full_path = malloc(1024);
-	if (full_path == NULL)
+	if (!full_path)
 	{
 		free(path_copy);
-		return (NULL);
+		return NULL;
 	}
 
 	dir = strtok(path_copy, ":");
-	while (dir != NULL)
+	while (dir)
 	{
 		snprintf(full_path, 1024, "%s/%s", dir, command);
 		if (access(full_path, X_OK) == 0)
 		{
 			free(path_copy);
-			return (full_path);
+			return full_path;
 		}
 		dir = strtok(NULL, ":");
 	}
 
 	free(path_copy);
 	free(full_path);
-	return (NULL);
+	return NULL;
 }
-
 /**
  * execute_command - Executes the command entered by the user.
  * @command: The command to execute.

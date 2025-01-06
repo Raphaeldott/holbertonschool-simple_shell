@@ -1,5 +1,5 @@
 #include "simple-shell.h"
-
+#include <errno.h>
 /**
  * print_prompt - Displays the prompt to the user.
  *
@@ -29,7 +29,7 @@ ssize_t read_input(char **line, size_t *length)
 
 	if (read == -1)
 	{
-		if (feof(stdin))
+		if (errno == 0) /* if EOF, errno is not set */
 		{
 			printf("\n");
 			free(*line);
@@ -38,6 +38,8 @@ ssize_t read_input(char **line, size_t *length)
 		else
 		{
 			perror("getline");
+			free(*line);
+			exit(EXIT_FAILURE);
 		}
 	}
 	return (read);

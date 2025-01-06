@@ -66,7 +66,7 @@ void prompt(void)
 
 	while (1)
 	{
-		print_prompt();
+		print_prompt();  /* Display prompt */
 		characters_read = read_input(&input_line, &input_length);
 		if (characters_read == -1)
 		{
@@ -74,11 +74,19 @@ void prompt(void)
 			exit(EXIT_FAILURE);
 		}
 
-		input_line[strcspn(input_line, "\n")] = '\0';
-		handle_exit(input_line);
-		handle_env(input_line);
+		input_line[strcspn(input_line, "\n")] = '\0'; /* Remove newline */
+		handle_exit(input_line);  /* Handle "exit" command */
+		handle_env(input_line);   /* Handle "env" command */
 		argv = tokenize_input(input_line);
-		execute_command(argv, environ);
+		if (argv[0] && strcmp(argv[0], "echo") == 0)
+		{
+			execute_command(argv, environ);
+		}
+		else
+		{
+			execute_command(argv, environ);
+		}
+
 		free(argv);
 	}
 

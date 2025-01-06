@@ -82,11 +82,12 @@ FILES
        - shell-utils.c: Utilities for finding executables and executing commands.
 
 AUTHOR
-       Written by [Your Name] and contributors.
+       Written by Andrea Marquez and Raphael Dott.
 
 REPORTING BUGS
        Report bugs or improvements to the authors at:
-       [your-email@example.com]
+       9815@holbertonstudents.com
+       9948@holbertonstudents.com
 
 SEE ALSO
        man 1 sh

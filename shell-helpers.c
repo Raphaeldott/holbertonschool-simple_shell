@@ -32,7 +32,7 @@ ssize_t read_input(char **line, size_t *length)
 		{
 			printf("\n");
 			free(*line);
-			exit(0); /* Exit gracefully on EOF */
+			exit(1); /* Exit gracefully on EOF */
 		}
 		else
 		{

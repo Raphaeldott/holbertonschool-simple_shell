@@ -115,14 +115,14 @@ void execute_command(char **argv, char **environment_var)
 	if (argv == NULL || argv[0] == NULL)
 	{
 		fprintf(stderr, "No such file or directory\n");
-		exit(1);
+		return;
 	}
 
 	executable = find_executable(argv[0]);
 	if (executable == NULL)
 	{
 		fprintf(stderr, "%s: No such file or directory\n", argv[0]);
-		exit(1);
+		return;
 	}
 
 	argv[0] = executable;

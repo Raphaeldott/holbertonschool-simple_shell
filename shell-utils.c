@@ -109,6 +109,8 @@ void execute_command(char **argv, char **environment_var)
 {
 	pid_t pid;
 	char *executable;
+	int status;
+	int exit_status;
 
 	if (argv == NULL || argv[0] == NULL)
 	{
@@ -144,7 +146,25 @@ void execute_command(char **argv, char **environment_var)
 	}
 	else  /* Parent process */
 	{
-		wait(NULL);
+		if (waitpid(pid, &status, 0) == -1)
+		{
+			perror("waitpid");
+			free(executable);
+			exit(EXIT_FAILURE);
+		}
+
+		if (WIFEXITED(status))
+		{
+			exit_status = WEXITSTATUS(status);
+			if (exit_status != 0)
+			{
+				fprintf(stderr, "Command failed with status: %d\n", exit_status);
+			}
+		}
+		else if (WIFSIGNALED(status))
+		{
+			fprintf(stderr, "Command terminated by signal: %d\n", WTERMSIG(status));
+		}
 	}
 
 	free(executable);

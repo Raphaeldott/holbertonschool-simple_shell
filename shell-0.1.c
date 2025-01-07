@@ -66,7 +66,8 @@ void prompt(void)
 
 	while (1)
 	{
-		print_prompt(); /* display prompt */
+		if (isatty(STDIN_FILENO))
+			print_prompt();
 		characters_read = read_input(&input_line, &input_length);
 		if (characters_read == -1)
 		{
@@ -78,18 +79,10 @@ void prompt(void)
 		handle_exit(input_line);  /* Handle "exit" command */
 		handle_env(input_line);   /* Handle "env" command */
 		argv = tokenize_input(input_line);
-		if (argv[0] && strcmp(argv[0], "echo") == 0)
-		{
-			execute_command(argv, environ);
-		}
-		else
-		{
-			execute_command(argv, environ);
-		}
-
+		execute_command(argv, environ);
 		free(argv);
+		printf("\n");
 	}
-
 	free(input_line);
 }
 

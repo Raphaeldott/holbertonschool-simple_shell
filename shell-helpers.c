@@ -9,6 +9,7 @@
 void print_prompt(void)
 {
 	printf("#cisfun$ ");
+	fflush(stdout);
 }
 /**
  * read_input - Read a line of input from the user.
@@ -39,11 +40,6 @@ ssize_t read_input(char **line, size_t *length)
 			exit(EXIT_FAILURE);
 		}
 	}
-
-	/* Remove trailing newline, if present */
-	if (read > 0 && (*line)[read - 1] == '\n')
-		(*line)[read - 1] = '\0';
-
 	return (read);
 }
 

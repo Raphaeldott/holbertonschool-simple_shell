@@ -63,9 +63,8 @@ void prompt(void)
 	size_t input_length = 0;
 	ssize_t characters_read;
 	char **argv;
-	int continue_prompting = 1;
 
-	while (continue_prompting)
+	while (1)
 	{
 		if (isatty(STDIN_FILENO))
 			print_prompt();
@@ -82,16 +81,9 @@ void prompt(void)
 		argv = tokenize_input(input_line);
 		execute_command(argv, environ);
 		free(argv);
-
-		/* Set continue_prompting to 0 to stop the loop */
-		if (input_line != NULL && strcmp(input_line, "exit") == 0)
-		{
-			continue_prompting = 0;
-		}
 	}
 	free(input_line);
 }
-
 /**
  * main - Entry point of the shell program.
  * This function calls the shell_loop function to start the

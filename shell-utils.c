@@ -82,14 +82,15 @@ char *find_executable(char *command)
 	}
 
 	if (is_absolute_command(command))
+	{
 		return (check_absolute_command(command));
+	}
 
 	path = getenv("PATH");
 	if (!path)
 	{
 		return (NULL);
 	}
-
 	return (search_in_path(command, path));
 }
 
@@ -107,27 +108,35 @@ char *find_executable(char *command)
 void execute_command(char **argv, char **environment_var)
 {
 	pid_t pid;
-	char *executable = find_executable(argv[0]);
+	char *executable;
+	int status = 0;
 
+	if (argv == NULL || argv[0] == NULL)
+	{
+		fprintf(stderr, "No such file or directory\n");
+		return;
+	}
+
+	executable = find_executable(argv[0]);
 	if (executable == NULL)
 	{
 		fprintf(stderr, "%s: No such file or directory\n", argv[0]);
+		status = 1; 
+		printf("status: %d\n", status);
 		return;
 	}
 
 	argv[0] = executable;
-	argv[1] = NULL;
 
 	pid = fork();
 
 	if (pid == -1)
 	{
 		perror("fork");
-		free(argv[0]);
 		free(executable);
 		exit(EXIT_FAILURE);
 	}
-	else if (pid == 0)
+	else if (pid == 0)  /* Child process */
 	{
 		if (execve(argv[0], argv, environment_var) == -1)
 		{
@@ -136,9 +145,9 @@ void execute_command(char **argv, char **environment_var)
 			exit(EXIT_FAILURE);
 		}
 	}
-	else
+	else  /* Parent process */
 	{
-		wait(NULL); /* Wait for child process to complete */
+		wait(NULL);
 	}
 
 	free(executable);

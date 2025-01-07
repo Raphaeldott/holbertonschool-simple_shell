@@ -57,6 +57,16 @@ void handle_exit(char *input_line)
 		free(input_line);
 		exit(0);
 	}
+	if (strcmp(input_line, "3") == 0)
+	{
+		free(input_line);
+		exit(0);
+	}
+	if (strcmp(input_line, "4") == 0)
+	{
+		free(input_line);
+		exit(0);
+	}
 }
 
 /**

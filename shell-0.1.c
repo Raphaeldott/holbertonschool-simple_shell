@@ -72,7 +72,7 @@ void prompt(void)
 		if (characters_read == -1)
 		{
 			free(input_line);
-			exit(EXIT_FAILURE);
+			exit(1);
 		}
 
 		input_line[strcspn(input_line, "\n")] = '\0'; /* Remove newline */

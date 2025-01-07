@@ -66,6 +66,7 @@ void prompt(void)
 
 	while (1)
 	{
+		print_prompt(); /* display prompt */
 		characters_read = read_input(&input_line, &input_length);
 		if (characters_read == -1)
 		{

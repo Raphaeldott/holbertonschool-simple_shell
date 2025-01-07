@@ -1,6 +1,16 @@
 #include "simple-shell.h"
 
 /**
+ * print_prompt - Displays the prompt to the user.
+ *
+ * This function prints the shell prompt to the terminal, indicating that the
+ * shell is ready to accept a new command from the user.
+ */
+void print_prompt(void)
+{
+	printf("#cisfun$ ");
+}
+/**
  * read_input - Read a line of input from the user.
  * @line: Pointer to the buffer where the input will be stored.
  * @length: Pointer to the size of the buffer.
@@ -17,26 +27,23 @@ ssize_t read_input(char **line, size_t *length)
 
 	if (read == -1)
 	{
-		if (*line == NULL) /* EOF detected */
+		if (*line == NULL || **line == '\0') /* Handle EOF case */
 		{
 			printf("\n");
 			free(*line);
-			exit(0);
+			exit(0); /* Exit gracefully on EOF */
 		}
 		else
 		{
-			perror("getline");
 			free(*line);
 			exit(EXIT_FAILURE);
 		}
 	}
-	if (*line && (*line)[0] == 27)
-	{
-		memset(*line, 0, strlen(*line));
-		return (0);
-	}
-	if ((*line)[read - 1] == '\n')
+
+	/* Remove trailing newline, if present */
+	if (read > 0 && (*line)[read - 1] == '\n')
 		(*line)[read - 1] = '\0';
+
 	return (read);
 }
 
@@ -54,7 +61,7 @@ void handle_exit(char *input_line)
 		free(input_line);
 		exit(0);
 	}
-	}
+}
 
 /**
  * handle_env - Prints the current environment variables.

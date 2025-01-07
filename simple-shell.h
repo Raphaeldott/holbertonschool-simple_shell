@@ -9,7 +9,7 @@
 #include <sys/wait.h>
 
 extern char **environ;
-
+void print_prompt(void);
 ssize_t read_input(char **line, size_t *len);
 void handle_exit(char *input_line);
 void handle_env(char *input_line);

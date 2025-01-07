@@ -63,7 +63,6 @@ char *search_in_path(char *command, char *path)
 
 	free(path_copy);
 	free(full_path);
-	fprintf(stderr, "%s: Command not found in PATH\n", command);
 	return (NULL);
 }
 
@@ -79,7 +78,6 @@ char *find_executable(char *command)
 
 	if (!command || !*command)
 	{
-		fprintf(stderr, "Invalid command\n");
 		return (NULL);
 	}
 
@@ -89,7 +87,6 @@ char *find_executable(char *command)
 	path = getenv("PATH");
 	if (!path)
 	{
-		fprintf(stderr, "PATH not set\n");
 		return (NULL);
 	}
 

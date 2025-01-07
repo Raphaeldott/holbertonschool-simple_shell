@@ -81,7 +81,6 @@ void prompt(void)
 		argv = tokenize_input(input_line);
 		execute_command(argv, environ);
 		free(argv);
-		printf("\n");
 	}
 	free(input_line);
 }

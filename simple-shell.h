@@ -15,7 +15,7 @@ void handle_exit(char *input_line);
 void handle_env(char *input_line);
 void shell_loop(void);
 char *find_executable(char *command);
-void execute_command(char **argv, char **environment_var);
+int execute_command(char **argv, char **environment_var);
 char **tokenize_input(char *line);
 void prompt(void);
 int is_absolute_command(char *command);

@@ -26,7 +26,7 @@ char *check_absolute_command(char *command)
 	if (access(command, X_OK) == 0)
 		return (strdup(command));
 
-	fprintf(stderr, "%s: Command not found\n", command);
+	fprintf(stderr, "%s: No such file or directory\n", command);
 	return (NULL);
 }
 
@@ -105,22 +105,23 @@ char *find_executable(char *command)
  * for the child to finish. If execve fails, an error
  * message is printed.
  */
-void execute_command(char **argv, char **environment_var)
+int execute_command(char **argv, char **environment_var)
 {
 	pid_t pid;
 	char *executable;
+	int status;
 
 	if (argv == NULL || argv[0] == NULL)
 	{
 		fprintf(stderr, "No such file or directory\n");
-		return;
+		return (1);
 	}
 
 	executable = find_executable(argv[0]);
 	if (executable == NULL)
 	{
 		fprintf(stderr, "%s: No such file or directory\n", argv[0]);
-		return;
+		return (1);
 	}
 
 	argv[0] = executable;
@@ -131,7 +132,7 @@ void execute_command(char **argv, char **environment_var)
 	{
 		perror("fork");
 		free(executable);
-		exit(EXIT_FAILURE);
+		return (1);
 	}
 	else if (pid == 0)  /* Child process */
 	{
@@ -139,13 +140,25 @@ void execute_command(char **argv, char **environment_var)
 		{
 			perror(argv[0]);
 			free(executable);
-			exit(EXIT_FAILURE);
+			exit(1);
 		}
 	}
 	else  /* Parent process */
 	{
-		wait(NULL);
+		if (waitpid(pid, &status, 0) == -1)
+		{
+			perror("waitpid");
+			free(executable);
+			return (1);
+		}
+
+		if (WIFEXITED(status))
+		{
+			free(executable);
+			return (WEXITSTATUS(status));
+		}
 	}
 
 	free(executable);
+	return (0);
 }

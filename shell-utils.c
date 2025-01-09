@@ -72,9 +72,11 @@ char *search_in_path(char *command, char *path)
  *
  * Return: The full path to the executable if found, NULL otherwise.
  */
+extern char **environ;
 char *find_executable(char *command)
 {
 	char *path;
+	char **env = environ;
 
 	if (!command || !*command)
 	{
@@ -86,7 +88,15 @@ char *find_executable(char *command)
 		return (check_absolute_command(command));
 	}
 
-	path = getenv("PATH");
+	while (*env)
+	{
+		if (strncmp(*env, "PATH=", 5) == 0)
+		{
+			path = *env + 5;
+			break;
+		}
+		env++;
+	}
 	if (!path)
 	{
 		return (NULL);

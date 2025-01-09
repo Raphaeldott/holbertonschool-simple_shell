@@ -115,11 +115,8 @@ void execute_command(char **argv, char **environment_var)
 	{
 		return;
 	}
-
 	executable = find_executable(argv[0]);
-
 	pid = fork();
-
 	if (pid == -1) /* Fork failed */
 	{
 		perror("fork");
@@ -133,9 +130,7 @@ void execute_command(char **argv, char **environment_var)
 			fprintf(stderr, "%s: No such file or directory\n", argv[0]);
 			exit(EXIT_FAILURE); /* Exit with failure */
 		}
-
 		argv[0] = executable;
-
 		if (execve(argv[0], argv, environment_var) == -1)
 		{
 			perror(argv[0]);
@@ -144,13 +139,7 @@ void execute_command(char **argv, char **environment_var)
 	}
 	else /* Parent process */
 	{
-		if (wait(&status) == -1) /* Wait for the child to finish */
-		{
-			perror("wait");
-			free(executable);
-			exit(EXIT_FAILURE);
-		}
+		wait(&status);
 	}
-
 	free(executable);
 }

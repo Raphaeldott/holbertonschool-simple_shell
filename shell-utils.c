@@ -109,6 +109,7 @@ void execute_command(char **argv, char **environment_var)
 {
 	pid_t pid;
 	char *executable;
+	int status;
 
 	if (argv == NULL || argv[0] == NULL)
 	{
@@ -116,34 +117,57 @@ void execute_command(char **argv, char **environment_var)
 	}
 
 	executable = find_executable(argv[0]);
-	if (executable == NULL)
-	{
-		perror("./shell");
-		return;
-	}
-
-	argv[0] = executable;
 
 	pid = fork();
 
-	if (pid == -1)
+	if (pid == -1) /* Fork failed */
 	{
 		perror("fork");
 		free(executable);
-		return;
+		exit(EXIT_FAILURE);
 	}
-	else if (pid == 0)  /* Child process */
+	else if (pid == 0) /* Child process */
 	{
+		if (executable == NULL)
+		{
+			fprintf(stderr, "%s: No such file or directory\n", argv[0]);
+			exit(EXIT_FAILURE); /* Exit with failure */
+		}
+
+		argv[0] = executable;
+
 		if (execve(argv[0], argv, environment_var) == -1)
 		{
 			perror(argv[0]);
-			free(executable);
-			exit(1);
+			exit(EXIT_FAILURE); /* Exit with failure */
 		}
 	}
-	else  /* Parent process */
+	else /* Parent process */
 	{
-		wait(NULL);
+		/* DEBUG: Print message before waiting for child */
+		printf("DEBUG: Waiting for child process...\n");
+
+		if (wait(&status) == -1) /* Wait for the child to finish */
+		{
+			perror("wait");
+			free(executable);
+			exit(EXIT_FAILURE);
+		}
+
+		/* DEBUG: Print message after waiting */
+		printf("DEBUG: Child process finished.\n");
+
+		/* Print raw and interpreted status */
+		printf("Raw status: %d\n", status);
+		if (WIFEXITED(status)) /* Child exited normally */
+		{
+			printf("Exit status: %d\n", WEXITSTATUS(status));
+		}
+		else if (WIFSIGNALED(status)) /* Child was terminated by a signal */
+		{
+			printf("Killed by signal: %d\n", WTERMSIG(status));
+		}
 	}
+
 	free(executable);
 }

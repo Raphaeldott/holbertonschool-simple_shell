@@ -144,28 +144,11 @@ void execute_command(char **argv, char **environment_var)
 	}
 	else /* Parent process */
 	{
-		/* DEBUG: Print message before waiting for child */
-		printf("DEBUG: Waiting for child process...\n");
-
 		if (wait(&status) == -1) /* Wait for the child to finish */
 		{
 			perror("wait");
 			free(executable);
 			exit(EXIT_FAILURE);
-		}
-
-		/* DEBUG: Print message after waiting */
-		printf("DEBUG: Child process finished.\n");
-
-		/* Print raw and interpreted status */
-		printf("Raw status: %d\n", status);
-		if (WIFEXITED(status)) /* Child exited normally */
-		{
-			printf("Exit status: %d\n", WEXITSTATUS(status));
-		}
-		else if (WIFSIGNALED(status)) /* Child was terminated by a signal */
-		{
-			printf("Killed by signal: %d\n", WTERMSIG(status));
 		}
 	}
 

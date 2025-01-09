@@ -26,15 +26,23 @@ ssize_t read_input(char **line, size_t *length)
 {
 	ssize_t read = getline(line, length, stdin);
 
-	if (read == -1) /* Handle EOF (Ctrl+D) */
+	if (read == -1)
 	{
-		printf("\n"); /* Print a newline to ensure clean prompt */
-		free(*line);  /* Free the allocated buffer */
-		exit(0);      /* Exit gracefully */
+		if (*line == NULL || **line == '\0') /* Handle EOF case */
+		{
+			if (isatty(STDIN_FILENO))  /* Only print a newline in interactive mode */
+			{
+				printf("\n");
+			}
+		}
+		else
+		{
+			free(*line);
+			exit(EXIT_FAILURE);
+		}
 	}
 	return (read);
 }
-
 
 /**
  * handle_exit - Checks if the input command is "exit" and exits the shell.

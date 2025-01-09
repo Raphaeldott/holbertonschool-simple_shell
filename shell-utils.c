@@ -118,7 +118,7 @@ void execute_command(char **argv, char **environment_var)
 	executable = find_executable(argv[0]);
 	if (executable == NULL)
 	{
-		fprintf(stderr, "%s: No such file or directory\n", argv[0]);
+		perror("./shell");
 		return;
 	}
 

@@ -31,8 +31,6 @@ ssize_t read_input(char **line, size_t *length)
 		if (*line == NULL || **line == '\0') /* Handle EOF case */
 		{
 			printf("\n");
-			free(*line);
-			exit(1); /* Exit gracefully on EOF */
 		}
 		else
 		{

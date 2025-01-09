@@ -105,23 +105,21 @@ char *find_executable(char *command)
  * for the child to finish. If execve fails, an error
  * message is printed.
  */
-int execute_command(char **argv, char **environment_var)
+void execute_command(char **argv, char **environment_var)
 {
 	pid_t pid;
 	char *executable;
-	int status;
 
 	if (argv == NULL || argv[0] == NULL)
 	{
-		fprintf(stderr, "No such file or directory\n");
-		return (1);
+		return;
 	}
 
 	executable = find_executable(argv[0]);
 	if (executable == NULL)
 	{
 		fprintf(stderr, "%s: No such file or directory\n", argv[0]);
-		return (1);
+		return;
 	}
 
 	argv[0] = executable;
@@ -132,7 +130,7 @@ int execute_command(char **argv, char **environment_var)
 	{
 		perror("fork");
 		free(executable);
-		return (1);
+		return;
 	}
 	else if (pid == 0)  /* Child process */
 	{
@@ -145,20 +143,7 @@ int execute_command(char **argv, char **environment_var)
 	}
 	else  /* Parent process */
 	{
-		if (waitpid(pid, &status, 0) == -1)
-		{
-			perror("waitpid");
-			free(executable);
-			return (1);
-		}
-
-		if (WIFEXITED(status))
-		{
-			free(executable);
-			return (WEXITSTATUS(status));
-		}
+		wait(NULL);
 	}
-
 	free(executable);
-	return (0);
 }

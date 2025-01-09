@@ -28,17 +28,14 @@ ssize_t read_input(char **line, size_t *length)
 
 	if (read == -1)
 	{
-		if (*line == NULL || **line == '\0') /* Handle EOF case */
+		if (isatty(STDIN_FILENO))  /* Only print a newline in interactive mode */
 		{
-			if (isatty(STDIN_FILENO))  /* Only print a newline in interactive mode */
-			{
-				printf("\n");
-			}
+			printf("\n");
 		}
 		else
 		{
 			free(*line);
-			exit(EXIT_FAILURE);
+			exit(0);
 		}
 	}
 	return (read);

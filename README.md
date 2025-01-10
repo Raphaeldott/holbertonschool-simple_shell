@@ -21,6 +21,9 @@
 ---
 
 ## Usage
+If you want to use this simple shell you can clone this repository: 
+https://github.com/Raphaeldott/holbertonschool-simple_shell.git
+When you are inside you can directly compile ant run it
 
 ## Compilation
 gcc -Wall -Werror -Wextra -pedantic *.c -o simple_shell
@@ -31,16 +34,18 @@ run the shell:
 
 ## Exemple Commands
 
-My_Shell$ ls
+Cisfun$ ls
 file1  file2  directory
-My_Shell$ /bin/ls -l
+Cisfun$ /bin/ls -l
 -rw-r--r-- 1 user group 1234 Jan 1 12:00 file1
 -rw-r--r-- 1 user group 5678 Jan 1 12:01 file2
-My_Shell$ env
+Cisfun$ env
 USER=username
 HOME=/home/username
 PATH=/usr/local/bin:/usr/bin:/bin
-My_Shell$ exit
+Cisfun$ exit
+Cisfun$ ctrl + D 
+root$ echo "/bin/ls" | ./simple_shell
 
 ## Files
 Core Files
